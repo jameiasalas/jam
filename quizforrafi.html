@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Rafi</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400&display=swap');
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #05050a;
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            width: 85%;
+            max-width: 700px;
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .hidden {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .visible {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Slightly bigger heading */
+        h1 {
+            font-weight: 200;
+            letter-spacing: 5px;
+            font-size: 1.8rem; 
+            margin-bottom: 35px;
+            text-transform: uppercase;
+            line-height: 1.3;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        /* Slightly bigger buttons */
+        button {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 15px 35px;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        button:hover {
+            background: white;
+            color: black;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+        }
+
+        /* Slightly bigger inputs */
+        input[type="text"] {
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid white;
+            color: white;
+            font-size: 1.4rem;
+            text-align: center;
+            padding: 12px;
+            outline: none;
+            margin-bottom: 25px;
+            width: 85%;
+        }
+
+        /* Slightly bigger letter text */
+        .letter {
+            font-size: 1.15rem;
+            line-height: 1.9;
+            text-align: justify;
+            max-height: 75vh;
+            overflow-y: auto;
+            padding-right: 15px;
+            font-weight: 400;
+        }
+
+        .glowing-text {
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.😎, 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        p {
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="canvas"></canvas>
+
+    <audio id="musicButterflies" loop>
+        <source src="Butterflies.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="musicAloneTogether" loop>
+        <source src="Steven Universe - Alone Together (Extended).mp3" type="audio/mpeg">
+    </audio>
+    <audio id="clickSound">
+        <source src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="screen1" class="container visible">
+        <h1>Are you Rafi?</h1>
+        <div class="btn-group">
+            <button onclick="transition('screen1', 'screen2')">Yes</button>
+            <button onclick="showWrong('screen1')">No</button>
+        </div>
+    </div>
+
+    <div id="screen2" class="container hidden">
+        <h1>When's my birthday?</h1>
+        <p style="opacity: 0.6; margin-bottom: 10px;">(Hint: Month Day)</p>
+        <input type="text" id="birthdayInput" placeholder="Enter date...">
+        <br>
+        <button onclick="checkBirthday()">Submit</button>
+    </div>
+
+    <div id="screen3" class="container hidden">
+        <h1>What's my full name?</h1>
+        <input type="text" id="nameInput" placeholder="Full name...">
+        <br>
+        <button onclick="checkFullName()">Submit</button>
+    </div>
+
+    <div id="screen4" class="container hidden">
+        <h1>What's my favorite color?</h1>
+        <div class="btn-group">
+            <button onclick="transition('screen4', 'screen5')">Blue</button>
+            <button onclick="showWrong('screen4')">Red</button>
+        </div>
+    </div>
+
+    <div id="screen5" class="container hidden">
+        <h1>What's my favorite TV show?</h1>
+        <div class="btn-group">
+            <button onclick="showWrong('screen5')">Stranger Things</button>
+            <button onclick="transition('screen5', 'screen6')">Dexter Morgan</button>
+        </div>
+    </div>
+
+    <div id="screen6" class="container hidden">
+        <h1>What's my biggest fear?</h1>
+        <div class="btn-group">
+            <button onclick="showWrong('screen6')">Spiders</button>
+            <button onclick="transition('screen6', 'screen7')">Blood</button>
+        </div>
+    </div>
+
+    <div id="screen7" class="container hidden">
+        <h1>Which do I prefer?</h1>
+        <div class="btn-group">
+            <button onclick="showWrong('screen7')">Spicy</button>
+            <button onclick="transition('screen7', 'screen8')">Sweets</button>
+        </div>
+    </div>
+
+    <div id="screen8" class="container hidden">
+        <h1>Which do I hate more?</h1>
+        <div class="btn-group">
+            <button onclick="transition('screen8', 'screen9')">Ketchup</button>
+            <button onclick="showWrong('screen8')">Mayonnaise</button>
+        </div>
+    </div>
+
+    <div id="screen9" class="container hidden">
+        <h1>What's my favorite hobby?</h1>
+        <div class="btn-group">
+            <button onclick="transition('screen9', 'screen10')">Drawing</button>
+            <button onclick="showWrong('screen9')">Singing</button>
+        </div>
+    </div>
+
+    <div id="screen10" class="container hidden">
+        <h1>What's my MOST favorite sport?</h1>
+        <div class="btn-group">
+            <button onclick="transition('screen10', 'screen11')">Badminton</button>
+            <button onclick="showWrong('screen10')">Swimming</button>
+        </div>
+    </div>
+
+    <div id="screen11" class="container hidden">
+        <h1>What's my favorite dessert?</h1>
+        <div class="btn-group">
+            <button onclick="showWrong('screen11')">Donuts</button>
+            <button onclick="transition('screen11', 'screen12')">Ice Cream</button>
+        </div>
+    </div>
+
+    <div id="screen12" class="container hidden">
+        <h1>Favorite flavor of Ice Cream?</h1>
+        <div class="btn-group">
+            <button onclick="transition('screen12', 'screen13')">Cookies and Cream</button>
+            <button onclick="showWrong('screen12')">Matcha</button>
+        </div>
+    </div>
+
+    <div id="screen13" class="container hidden">
+        <h1>what's my favorite Movie genre?</h1>
+        <div class="btn-group">
+            <button onclick="showWrong('screen13')">Rom-com</button>
+            <button onclick="transition('screen13', 'screen14')">Horror</button>
+        </div>
+    </div>
+
+    <div id="screen14" class="container hidden">
+        <h1>MOST favorite artist?</h1>
+        <div class="btn-group">
+            <button onclick="transition('screen14', 'screen15')">Laufey</button>
+            <button onclick="showWrong('screen14')">Rob Deniel</button>
+        </div>
+    </div>
+
+    <div id="screen15" class="container hidden">
+        <h1>What's my love language?</h1>
+        <div class="btn-group">
+            <button onclick="showWrong('screen15')">Physical Touch</button>
+            <button onclick="transition('screen15', 'screen16')">Act of Service</button>
+        </div>
+    </div>
+
+    <div id="screen16" class="container hidden">
+        <h1>What's my least favorite food?</h1>
+        <div class="btn-group">
+            <button onclick="showWrong('screen16')">Chicken</button>
+            <button onclick="transition('screen16', 'screen17')">Fish</button>
+        </div>
+    </div>
+
+    <div id="screen17" class="container hidden">
+        <h1>What was my first instrument?</h1>
+        <div class="btn-group">
+            <button onclick="transition('screen17', 'screen18')">Piano</button>
+            <button onclick="showWrong('screen17')">Guitar</button>
+        </div>
+    </div>
+
+    <div id="screen18" class="container hidden">
+        <h1>What's my favorite soda?</h1>
+        <div class="btn-group">
+            <button onclick="showWrong('screen18')">Coke</button>
+            <button onclick="transition('screen18', 'screen19')">Root Beer</button>
+        </div>
+    </div>
+
+    <div id="screen19" class="container hidden">
+        <h1>What's my Zodiac sign?</h1>
+        <div class="btn-group">
+            <button onclick="transition('screen19', 'screen20')">Gemini</button>
+            <button onclick="showWrong('screen19')">Cancer</button>
+        </div>
+    </div>
+
+    <div id="screen20" class="container hidden">
+        <h1>What's the name of my favorite song?</h1>
+        <input type="text" id="songInput" placeholder="Song name...">
+        <br>
+        <button onclick="checkSong()">Submit</button>
+    </div>
+
+    <div id="screen21" class="container hidden">
+        <h1>What's my most frequent phrase?</h1>
+        <input type="text" id="phraseInput" placeholder="Type here...">
+        <br>
+        <button onclick="checkPhrase()">Submit</button>
+    </div>
+
+    <div id="screen22" class="container hidden">
+        <h1>Do you love Jameia Salas</h1>
+        <div class="btn-group">
+            <button onclick="transition('screen22', 'screen23')">Yes</button>
+            <button onclick="showWrong('screen22', 'edi wow')">No</button>
+        </div>
+    </div>
+
+    <div id="screen23" class="container hidden">
+        <h1>Will you, Rafi, be my valentine?</h1>
+        <div class="btn-group">
+            <button onclick="finalSequence()">Yes</button>
+            <button onclick="showWrong('screen23', 'edi wow')">No</button>
+        </div>
+    </div>
+
+    <div id="screenWrong" class="container hidden">
+        <h1 id="wrongMsg" style="font-size: 2.5rem;">Wrong!</h1>
+        <button onclick="retry()">Try again</button>
+    </div>
+
+    <div id="screenFinal" class="container hidden">
+        <div class="letter glowing-text">
+            <p>SUPRISE!!! Happy Valentine’s Day, my love.</p>
+            
+            <p>Hey Rafi,
+              <p>I wanted to take a second to tell you something that probably doesn’t get said enough.</p>
+              <p>In a world that can be pretty loud and chaotic, you’re my favorite kind of quiet. </p>
+              <p>Whether we’re laughing until it hurts or just existing in the same space, everything feels a little more "right" when you’re around. You have this way of making the ordinary feel like something worth holding onto. </p>
+<p> I'm so lucky to have you in my corner. Happy Valentine’s Day—here’s to us and whatever comes next.</p>
+        </div>
+    </div>
+
+    <script>
+        
+        
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const clickSfx = document.getElementById('clickSound');
+        const musicButterflies = document.getElementById('musicButterflies');
+        const musicAloneTogether = document.getElementById('musicAloneTogether');
+
+        let stars = [];
+        let starSpeed = 0.6;
+        let starCount = 150;
+
+        function initStars() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            stars = [];
+            for (let i = 0; i < starCount; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 1.5,
+                    opacity: Math.random(),
+                    speed: Math.random() * 0.5
+                });
+            }
+        }
+
+        function drawStars() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "white";
+            stars.forEach(s => {
+                ctx.globalAlpha = s.opacity;
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+                ctx.fill();
+                s.y -= s.speed * starSpeed;
+                if (s.y < 0) s.y = canvas.height;
+            });
+            requestAnimationFrame(drawStars);
+        }
+
+        window.addEventListener('resize', initStars);
+        initStars();
+        drawStars();
+
+        function playSfx() {
+            clickSfx.currentTime = 0;
+            clickSfx.play();
+            if (musicButterflies.paused && musicAloneTogether.paused) {
+                musicButterflies.play();
+            }
+        }
+
+        function transition(fromId, toId) {
+            playSfx();
+            const from = document.getElementById(fromId);
+            const to = document.getElementById(toId);
+            from.classList.remove('visible');
+            setTimeout(() => {
+                from.classList.add('hidden');
+                to.classList.remove('hidden');
+                setTimeout(() => to.classList.add('visible'), 50);
+            }, 800);
+        }
+
+        function showWrong(currentId, customMsg = "Wrong!") {
+            playSfx();
+            document.getElementById('wrongMsg').innerText = customMsg;
+            transition(currentId, 'screenWrong');
+        }
+
+        function retry() {
+            document.getElementById('birthdayInput').value = "";
+            document.getElementById('nameInput').value = "";
+            document.getElementById('songInput').value = "";
+            document.getElementById('phraseInput').value = "";
+            transition('screenWrong', 'screen1');
+        }
+
+        function checkBirthday() {
+            const input = document.getElementById('birthdayInput').value.toLowerCase().trim();
+            if (input.includes("june 21") || input.includes("06/21") || input.includes("6/21")) {
+                transition('screen2', 'screen3');
+            } else {
+                showWrong('screen2');
+            }
+        }
+
+        function checkFullName() {
+            const input = document.getElementById('nameInput').value.toLowerCase().trim();
+            if (input === "jameia roz l salas") {
+                transition('screen3', 'screen4');
+            } else {
+                showWrong('screen3');
+            }
+        }
+
+        function checkSong() {
+            const input = document.getElementById('songInput').value.toLowerCase().trim();
+            if (input === "haunted") {
+                transition('screen20', 'screen21');
+            } else {
+                showWrong('screen20');
+            }
+        }
+
+        function checkPhrase() {
+            const input = document.getElementById('phraseInput').value.toLowerCase().trim();
+            if (input.includes("im sobbing")) {
+                transition('screen21', 'screen22');
+            } else {
+                showWrong('screen21');
+            }
+        }
+
+        function finalSequence() {
+            musicButterflies.pause();
+            musicAloneTogether.play();
+            starSpeed = 5;
+            starCount = 400;
+            initStars();
+            transition('screen23', 'screenFinal');
+        }
+    </script>
+</body>
+</html>
